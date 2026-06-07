@@ -1,45 +1,62 @@
-# Given a string, determine the length of the longest contiguous substring in which every character appears only once. Input 1: s="abcadefgh" Output 1: 8 Input 2 : s="aaaaa" Output 2: 1
+# Given a string s and an integer k, repeatedly remove any group of exactly k consecutive identical characters.
+
+# Continue until no more removals are possible.
+
+# Return the final string. Input : s = "deeedbbcccbdaa" k = 3
+
+# Explanation : deeedbbcccbdaa
+
+# remove "eee" ddbbcccbdaa
+
+# remove "ccc" ddbbbdaa
+
+# remove "bbb" dddaa
+
+# remove "ddd" aa
+
+# Output : aa
 
 # Input Format
 
-# A single string containing lowercase English letters.
+# First line contains a string s.
+
+# Second line contains an integer k.
 
 # Constraints
 
-# 1 <= len(s) <= 10^5
+# 1 ≤ len(s) ≤ 100000 2 ≤ k ≤ 10000 s contains lowercase English letters
 
 # Output Format
 
-# Print the length of the longest substring without repeating characters.
+# Print the final string after all removals.
 
-def longest_substring_without_repeating_characters(s):
-    char_index_map = {}
-    max_length = 0
-    start = 0
-
-    for end in range(len(s)):
-        if s[end] in char_index_map and char_index_map[s[end]] >= start:
-            start = char_index_map[s[end]] + 1
-        char_index_map[s[end]] = end
-        max_length = max(max_length, end - start + 1)
-
-    return max_length
+def removeDuplicates(s: str, k: int) -> str:
+    stack = []
+    for ch in s:
+        if stack and stack[-1][0] == ch:
+            stack[-1][1] += 1
+            if stack[-1][1] == k:
+                stack.pop()
+        else:
+            stack.append([ch, 1])
+    return ''.join(ch * count for ch, count in stack)
 
 
-if __name__ == "__main__":
+def main() -> None:
     import sys
 
-    data = sys.stdin.read().strip()
-    if not data:
-        try:
-            data = input().strip()
-        except Exception:
-            data = ""
+    data = sys.stdin.read().strip().split()
+    if len(data) < 2:
+        return
 
-    if not data:
-        sys.exit(0)
+    s = data[0]
+    try:
+        k = int(data[1])
+    except ValueError:
+        return
 
-    if (data[0] == '"' and data[-1] == '"') or (data[0] == "'" and data[-1] == "'"):
-        data = data[1:-1]
+    print(removeDuplicates(s, k))
 
-    print(longest_substring_without_repeating_characters(data))
+
+if __name__ == '__main__':
+    main()
